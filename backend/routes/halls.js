@@ -8,7 +8,7 @@ const router = express.Router();
 // @desc    Get all active halls
 router.get('/', protect, async (req, res) => {
     try {
-        const halls = await Hall.find({ isActive: true, collegeId: req.user.collegeId })
+        const halls = await Hall.find({ isActive: true })
             .populate('createdBy', 'name email department')
             .sort({ name: 1 });
         res.json(halls);
@@ -44,7 +44,6 @@ router.post('/', protect, facultyOnly, async (req, res) => {
             capacity,
             timeSlots,
             amenities: amenities || '',
-            collegeId: req.user.collegeId,
             createdBy: req.user._id,
         });
 

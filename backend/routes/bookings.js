@@ -18,10 +18,6 @@ router.post('/', protect, studentOnly, async (req, res) => {
             return res.status(404).json({ message: 'Hall not found' });
         }
 
-        if (hallExists.collegeId !== req.user.collegeId) {
-            return res.status(403).json({ message: 'You can only book halls within your own college' });
-        }
-
         // Check for conflicting bookings (pending or approved)
         const conflict = await Booking.findOne({
             hall,
@@ -70,13 +66,9 @@ router.get('/', protect, async (req, res) => {
         let query = {};
         const { status } = req.query;
 
-        // Students see only their bookings; Faculty see only bookings for their college's halls
+        // Students see only their bookings; Faculty see all
         if (req.user.role === 'student') {
             query.requestedBy = req.user._id;
-        } else if (req.user.role === 'faculty') {
-            const collegeHalls = await Hall.find({ collegeId: req.user.collegeId }).select('_id');
-            const hallIds = collegeHalls.map(h => h._id);
-            query.hall = { $in: hallIds };
         }
 
         if (status && status !== 'all') {
@@ -102,10 +94,6 @@ router.get('/stats', protect, async (req, res) => {
         let query = {};
         if (req.user.role === 'student') {
             query.requestedBy = req.user._id;
-        } else if (req.user.role === 'faculty') {
-            const collegeHalls = await Hall.find({ collegeId: req.user.collegeId }).select('_id');
-            const hallIds = collegeHalls.map(h => h._id);
-            query.hall = { $in: hallIds };
         }
 
         const pending = await Booking.countDocuments({ ...query, status: 'pending' });
@@ -140,10 +128,6 @@ router.get('/availability', protect, async (req, res) => {
         const hall = await Hall.findById(hallId);
         if (!hall) {
             return res.status(404).json({ message: 'Hall not found' });
-        }
-
-        if (hall.collegeId !== req.user.collegeId) {
-            return res.status(403).json({ message: 'Access denied to this hall' });
         }
 
         // Find all booked slots for this hall and date
