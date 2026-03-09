@@ -24,6 +24,11 @@ const hallSchema = new mongoose.Schema({
         type: String,
         default: '',
     },
+    collegeId: {
+        type: String,
+        required: [true, 'Please provide the college ID for this hall'],
+        trim: true,
+    },
     createdBy: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
