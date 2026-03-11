@@ -49,7 +49,7 @@ const seedAdmin = async () => {
             await User.create({
                 name: 'Super Admin',
                 email: 'admin@college.edu',
-                password: 'admin123456',
+                password: 'SecureAdmin@2026',
                 role: 'admin',
                 isApproved: true,
                 collegeId: 'ADMIN001',

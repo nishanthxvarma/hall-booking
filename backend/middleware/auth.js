@@ -12,7 +12,7 @@ const protect = async (req, res, next) => {
             if (!req.user) {
                 return res.status(401).json({ message: 'User not found' });
             }
-            next();
+            return next();
         } catch (error) {
             return res.status(401).json({ message: 'Not authorized, token failed' });
         }
@@ -24,10 +24,10 @@ const protect = async (req, res, next) => {
 };
 
 const facultyOnly = (req, res, next) => {
-    if (req.user && req.user.role === 'faculty') {
+    if (req.user && (req.user.role === 'faculty' || req.user.role === 'admin')) {
         next();
     } else {
-        res.status(403).json({ message: 'Access denied. Faculty only.' });
+        res.status(403).json({ message: 'Access denied. Faculty or Admin only.' });
     }
 };
 
