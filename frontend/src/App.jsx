@@ -10,6 +10,7 @@ import FacultyDashboard from './pages/FacultyDashboard';
 import ManageHalls from './pages/ManageHalls';
 import BookingConfirmed from './pages/BookingConfirmed';
 import AdminDashboard from './pages/AdminDashboard';
+import { Analytics } from '@vercel/analytics/react';
 
 const HomeRedirect = () => {
     const { user, loading } = useAuth();
@@ -76,6 +77,7 @@ function App() {
                     <Route path="/" element={<HomeRedirect />} />
                     <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
+                <Analytics />
             </Router>
         </AuthProvider>
     );
